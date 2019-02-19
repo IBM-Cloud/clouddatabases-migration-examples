@@ -2,7 +2,7 @@
 
 This script will allow you to migrate your Compose for Elasticsearch database to IBM Cloud Databases for Elasticsearch. Make sure that the same resources that you've given your original database is the same as the target database. The script will mount your IBM Cloud Object Storage / S3 bucket to both databases and takes snapshots of your Compose for Elasticsearch database and places those into a secure bucket. Then, your IBM Cloud Databases for Elasticsearch will read and restore those snapshots from that IBM Cloud Object Storage / S3 bucket. 
 
-The assumption is that you're writing to your Compose database while you're taking snapshots and restoring to the Databases for Elasticsearch database. Therefore, we're taking four snapshots in this example. Each snapshot will take a shorter amount of time than the previous one due to the snapshot backing up the latest writes to your Compose database before restoring the in the Databases for Elasticsearch deployment.
+The assumption is that you're writing to your Compose database while you're taking snapshots and restoring to the Databases for Elasticsearch database. Incremental restores can only work if the number of shards of each index on both instances match. Don't try to reindex and change the number of shards of any indices once you've started taking snapshots. We're taking four snapshots in this example script. Each snapshot will take a shorter amount of time than the previous one due to the snapshot backing up the latest writes to your Compose database before restoring them in the Databases for Elasticsearch deployment.
 
 ## Bring your own object storage
 
