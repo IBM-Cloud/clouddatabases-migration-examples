@@ -95,7 +95,7 @@ curl -H 'Content-Type: application/json' -sS -XPOST \
 # So at this point we stop writing to the Compose deployment. 
 # We then proceed with a final snapshot/restore cycle to get all the remaining changes to Databases for Elasticsearch.
 
-# Close all indices on ICD so we can perform the next restore on top of it, without touching the searchguard index
+# Close all indices on Databases for Elasticsearch so we can perform the next restore on top of it, without touching the searchguard index
 curl -sS "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/_cat/indices/?h=index" | \
 grep -v -e '^searchguard$' | \
 while read index; do
