@@ -1,4 +1,4 @@
-# Examples to on How to Migrate your Database from Compose to IBM Cloud Databases
+# Migration to IBM Cloud Databases Examples
 
 Each folder in this repository represents a database on IBM Cloud and Compose. Each folder contains a script and instructions on how to migrate from that a Compose database to an IBM Cloud Database.
 
