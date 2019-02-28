@@ -51,5 +51,5 @@ chmod a+x elasticsearch_migration.sh
 Then run the script in your terminal, e.g.:
 
 ```shell
-./elasticsearch_migrate.sh
+./elasticsearch_migration.sh
 ```
