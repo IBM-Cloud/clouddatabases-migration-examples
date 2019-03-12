@@ -1,6 +1,6 @@
 # IBM Cloud Databases for Elasticsearch Migration Guide
 
-The migration steps in this repository is discussed in ["A How-to for migrating Elasticsearch to IBM Cloud Databases for Elaticsearch"](https://www.ibm.com/blogs/bluemix/2019/02/a-how-to-for-migrating-elasticsearch-to-ibm-cloud-databases-for-elasticsearch/)
+The migration steps in this repository is discussed in ["A How-to for migrating Elasticsearch to IBM Cloud Databases for Elaticsearch"](https://www.ibm.com/blogs/bluemix/2019/02/a-how-to-for-migrating-elasticsearch-to-ibm-cloud-databases-for-elasticsearch/).
 
 The file `elasticsearch_migration.sh` contains an example of the steps you could take to migrate your Compose for Elasticsearch database to IBM Cloud Databases for Elasticsearch. Make sure that the same resources that you've given your original database is the same as the target database. This example shows you how to mount your IBM Cloud Object Storage / S3 bucket to both databases and takes snapshots of your Compose for Elasticsearch database and places those into a secure bucket. Then, your IBM Cloud Databases for Elasticsearch will read and restore those snapshots from that IBM Cloud Object Storage / S3 bucket. 
 
@@ -15,7 +15,7 @@ The assumption is that you're writing to your Compose database while you're taki
 
 The example will work with an S3 compatible object storage bucket. IBM Cloud Object Storage or S3 will work with these examples. Therefore, you can choose the storage solution that works with your use case.
 
-## Variables used in the migration script
+## Variables used in the migration file
 
 #### Compose Credentials
 
