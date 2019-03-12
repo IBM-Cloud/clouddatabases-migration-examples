@@ -1,5 +1,3 @@
-#!/bin/bash
-
 compose_username=composetestuser
 compose_password=composetestpassword
 compose_endpoint=test.composedb.com
