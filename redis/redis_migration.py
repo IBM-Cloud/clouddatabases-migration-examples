@@ -106,4 +106,4 @@ def migrate(srchost, srchostauth, srchostport, dsthost, dsthostauth, dsthostport
     print('Keys already existing on destination:', already_existing)
 
 if __name__ == '__main__':
-migrate()
+    migrate()
