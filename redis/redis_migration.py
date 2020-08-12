@@ -36,8 +36,9 @@ from redis.exceptions import ResponseError
 @click.option('--ssldst',default=False, is_flag=True, help='Set TLS/SSL flag for destination')
 @click.option('--db', default=0, help='Redis db number, default 0')
 @click.option('--flush', default=False, is_flag=True, help='Delete all keys from destination before migrating')
+@click.option('--dryrun', default=False, is_flag=True, help='Execute test run of flush (if enabled) and migration')
 
-def migrate(srchost, srchostauth, srchostport, dsthost, dsthostauth, dsthostport, dsthostcacert, sslsrc, ssldst, db, flush):
+def migrate(srchost, srchostauth, srchostport, dsthost, dsthostauth, dsthostport, dsthostcacert, sslsrc, ssldst, db, flush, dryrun):
     if srchost == dsthost:
         print('Source and destination must be different.')
         return
@@ -45,7 +46,7 @@ def migrate(srchost, srchostauth, srchostport, dsthost, dsthostauth, dsthostport
     source = redis.StrictRedis(host=srchost, port=int(srchostport), db=db, password=srchostauth, ssl=sslsrc, ssl_cert_reqs=None)
     dest = redis.StrictRedis(host=dsthost, port=int(dsthostport), db=db, password=dsthostauth, ssl=ssldst, ssl_ca_certs=dsthostcacert)
 
-    if flush:
+    if flush and not dryrun:
         dest.flushdb()
 
     size = source.dbsize()
@@ -80,14 +81,26 @@ def migrate(srchost, srchostauth, srchostport, dsthost, dsthostauth, dsthostport
             if ttl == -1:
                 ttl = 0
             if data != None:
-                pipeline.restore(key, ttl, data)
+                if dryrun:
+                    # Execute generic operation to determine whether key exists. This is
+                    # used in place of 'restore' to help generate the 'already_existing'
+                    # summary statistic.
+                    pipeline.type(key)
+                else:
+                    pipeline.restore(key, ttl, data)
             else:
                 non_existing += 1
 
         results = pipeline.execute(False)
 
         for key, result in zip(keys, results):
-            if result != b'OK':
+            if dryrun:
+                # If 'type' returned something other than 'none', we know the key exists.
+                # If 'flush' is enabled, pretend the key doesn't exist to avoid a non-zero
+                # 'already_existing' count on dryrun flush.
+                if not flush and result != b'none':
+                    already_existing += 1
+            elif result != b'OK':
                 e = result
                 if hasattr(e, 'args') and (e.args[0] == 'BUSYKEY Target key name already exists.' or e.args[0] == 'Target key name is busy.'):
                     already_existing += 1
