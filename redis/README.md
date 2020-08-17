@@ -22,13 +22,13 @@ These can be gathered using the `ibmcloud cdb` command.
 Once you've got the credentials to your IBM Cloud Databases for Redis database, you can run the script using Python 3 from the terminal.
 
 ```shell
-python3 pymigration.py <source host> <source password> <source port> <destination host> <destination password> <destination port>  <destination ca certificate path> --sslsrc --ssldst
+python3 redis_migration.py <source host> <source password> <source port> <destination host> <destination password> <destination port>  <destination ca certificate path> --sslsrc --ssldst
 ```
 
 For example:
 
 ```shell
-python3 pymigration.py database.composedb.com mypassword123 99999 redis.test.databases.appdomain.cloud mypassword456 88888  ~/path/to/cert --sslsrc --ssldst
+python3 redis_migration.py database.composedb.com mypassword123 99999 redis.test.databases.appdomain.cloud mypassword456 88888  ~/path/to/cert --sslsrc --ssldst
 ```
 
 ## Dry run
