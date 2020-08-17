@@ -30,3 +30,18 @@ For example:
 ```shell
 python3 pymigration.py database.composedb.com mypassword123 99999 redis.test.databases.appdomain.cloud mypassword456 88888  ~/path/to/cert --sslsrc --ssldst
 ```
+
+## Dry run
+
+To test your migration, add the `--dryrun` flag. This is helpful for confirming connectivity, existing keys, etc.
+without triggering the actual migration.
+
+For example:
+
+```shell
+python3 redis_migration.py --dryrun ...
+```
+
+If destination flushing (`--flush`) is enabled in combination with `--dryrun`, the script will act as if the
+destination were flushed without actually flushing it. The reported amount of already existing keys will always
+be zero.
