@@ -17,6 +17,39 @@ You will need the following credentials when running the migration script:
 
 These can be gathered using the `ibmcloud cdb` command.
 
+## Preparing your system
+
+If you have a valid Python3 installation with the dependencies specified at the top of the script,
+you can run the script directly (see next section). For a more isolated environment, or if your
+system does not meet all the requirements, proceed to the following subsection.
+
+### Install using Docker
+
+This method is suitable for any operating system that supports Docker.
+Make sure you have [docker](https://docs.docker.com/engine/install/) installed, then build an image as below.
+Before doing that make sure you have downloaded the CA root certificate for the destination Redis service
+and place it here with the name `ca.crt`. The build will fail if there is no such file under this name:
+
+```bash
+docker build . -t redis-migration:1
+```
+
+Once the above command succeeds, run the script using the following:
+
+```bash
+docker run -it --rm redis-migration:1 ...
+```
+
+Replace the `...` by the arguments you would normally provide as specified in the next section.
+For example:
+
+```bash
+docker run -it --rm redis-migration:1 <source host> <source password> <source port> ... /home/ca.crt
+```
+
+Note from the above that the certificate for the destination was
+already copied to `/home/ca.crt` from the build step.
+
 ## Running the script
 
 Once you've got the credentials to your IBM Cloud Databases for Redis database, you can run the script using Python 3 from the terminal.
