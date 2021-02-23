@@ -26,7 +26,9 @@ system does not meet all the requirements, proceed to the following subsection.
 ### Install using Docker
 
 This method is suitable for any operating system that supports Docker.
-Make sure you have [docker](https://docs.docker.com/engine/install/) installed, then build an image:
+Make sure you have [docker](https://docs.docker.com/engine/install/) installed, then build an image as below.
+Before doing that make sure you have downloaded the CA root certificate for the destination Redis service
+and place it here with the name `ca.crt`. The build will fail if there is no such file under this name:
 
 ```bash
 docker build . -t redis-migration:1
@@ -42,8 +44,11 @@ Replace the `...` by the arguments you would normally provide as specified in th
 For example:
 
 ```bash
-docker run -it --rm redis-migration:1 <source host> <source password> <source port> ...
+docker run -it --rm redis-migration:1 <source host> <source password> <source port> ... /home/ca.crt
 ```
+
+Note from the above that the certificate for the destination was
+already copied to `/home/ca.crt` from the build step.
 
 ## Running the script
 

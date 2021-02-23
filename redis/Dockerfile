@@ -10,5 +10,6 @@ RUN pip install -r requirements.txt
 
 # copy rest of files
 COPY /redis_migration.py /home/
+COPY /ca.crt /home/
 
-CMD ["python", "redis_migration.py"]
+ENTRYPOINT ["python", "redis_migration.py"]
