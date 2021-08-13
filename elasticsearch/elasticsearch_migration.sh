@@ -54,9 +54,10 @@ curl -H 'Content-Type: application/json' -sS -XPOST \
 # In the mean time, we continued writing to the Compose deployment.
 # We're going to perform another snapshot/restore to get the new data to Databases for Elasticsearch
 
-# Close all indices on ICD so we can perform the next restore on top of it, without touching the searchguard index
-curl -sS "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/_cat/indices/?h=index" | \
-grep -v -e '^searchguard$' | \
+# Close opened indices on ICD so we can perform the next restore on top of it, without touching the searchguard index
+curl -sS "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/_cat/indices" | \
+grep -v -e 'close' | \
+grep -v -e '^searchguard$' | awk '{print $3}' | \
 while read index; do
   curl -sS -XPOST "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/$index/_close"
 done
@@ -73,12 +74,14 @@ curl -H 'Content-Type: application/json' -sS -XPOST \
 # In the mean time, we continued writing to the Compose deployment.
 # We're going to perform another snapshot/restore to get the new data to Databases for Elasticsearch
 
-# Close all indices on ICD so we can perform the next restore on top of it, without touching the searchguard index
-curl -sS "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/_cat/indices/?h=index" | \
-grep -v -e '^searchguard$' | \
+# Close opened indices on ICD so we can perform the next restore on top of it, without touching the searchguard index
+curl -sS "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/_cat/indices" | \
+grep -v -e 'close' | \
+grep -v -e '^searchguard$' | awk '{print $3}' | \
 while read index; do
   curl -sS -XPOST "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/$index/_close"
 done
+
 
 # Perform 3rd snapshot on Compose deployment
 curl -sS -XPUT \
@@ -93,9 +96,10 @@ curl -H 'Content-Type: application/json' -sS -XPOST \
 # So at this point we stop writing to the Compose deployment. 
 # We then proceed with a final snapshot/restore cycle to get all the remaining changes to Databases for Elasticsearch.
 
-# Close all indices on Databases for Elasticsearch so we can perform the next restore on top of it, without touching the searchguard index
-curl -sS "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/_cat/indices/?h=index" | \
-grep -v -e '^searchguard$' | \
+# Close opened indices on Databases for Elasticsearch so we can perform the next restore on top of it, without touching the searchguard index
+curl -sS "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/_cat/indices" | \
+grep -v -e 'close' | \
+grep -v -e '^searchguard$' | awk '{print $3}' | \
 while read index; do
   curl -sS -XPOST "https://${icd_username}:${icd_password}@${icd_endpoint}:${icd_port}/$index/_close"
 done
