@@ -13,9 +13,10 @@ progressbar
 redis
 Sample usage on the command line:
 python pymigration.py <srchost name> <src password or ""> <srcport> <dsthost Databases for Redis host> <dsthostauth password> <dsthostport port> <dsthostcacert location of CA cert> 
-If you're migrating to Databases for Redis, use the --ssldst flag. 
+If you're migrating to Databases for Redis, use the --ssldst flag.
 If you're source database uses SSL/TLS, then also use the --sslsrc flag.
 You can specify the Redis database to copy from/into using the --db flag and flush the destination database using the --flush flag.
+If the destination Redis version is less than 6, dsthostauth should be the password. If 6 or greater it should be username:password
 """
 
 import click
@@ -43,8 +44,13 @@ def migrate(srchost, srchostauth, srchostport, dsthost, dsthostauth, dsthostport
         print('Source and destination must be different.')
         return
 
-    source = redis.StrictRedis(host=srchost, port=int(srchostport), db=db, password=srchostauth, ssl=sslsrc, ssl_cert_reqs=None)
-    dest = redis.StrictRedis(host=dsthost, port=int(dsthostport), db=db, password=dsthostauth, ssl=ssldst, ssl_ca_certs=dsthostcacert)
+    source = redis.Redis(host=srchost, port=int(srchostport), db=db, password=srchostauth, ssl=sslsrc, ssl_cert_reqs=None)
+
+    if ":" in dsthostauth:
+      username, password = dsthostauth.split(":")
+      dest = redis.Redis(host=dsthost, port=int(dsthostport), db=db, username=username, password=password, ssl=ssldst, ssl_ca_certs=dsthostcacert)
+    else:
+      dest = redis.Redis(host=dsthost, port=int(dsthostport), db=db, password=dsthostauth, ssl=ssldst, ssl_ca_certs=dsthostcacert)
 
     if flush and not dryrun:
         dest.flushdb()
