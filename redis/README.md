@@ -44,24 +44,29 @@ Replace the `...` by the arguments you would normally provide as specified in th
 For example:
 
 ```bash
-docker run -it --rm redis-migration:1 <source host> <source password> <source port> ... /home/ca.crt
+docker run -it --rm redis-migration:1 <source host> <source password> <source port> ...
 ```
 
-Note from the above that the certificate for the destination was
-already copied to `/home/ca.crt` from the build step.
+If you have certificates for either the source or destination, mount them to the container using the following option:
+
+```bash
+docker run -it --rm -v /path/to/certs/dir:/certs redis-migration:1 <source host> ... --srchostcacert /certs/srcca.crt --dsthostcacert /certs/destca.crt
+```
 
 ## Running the script
 
 Once you've got the credentials to your IBM Cloud Databases for Redis database, you can run the script using Python 3 from the terminal.
 
 ```shell
-python3 redis_migration.py <source host> <source password> <source port> <destination host> <destination password> <destination port>  <destination ca certificate path> --sslsrc --ssldst
+python3 redis_migration.py <source host> <source password> <source port> <destination host> <destination password> <destination port> --srchostcacert <source ca certificate path> --dsthostcacert <destination ca certificate path> --sslsrc --ssldst
 ```
+
+Note that both `--srchostcacert` and `--dsthostcacert` are optional.
 
 For example:
 
 ```shell
-python3 redis_migration.py database.composedb.com mypassword123 99999 redis.test.databases.appdomain.cloud mypassword456 88888  ~/path/to/cert --sslsrc --ssldst
+python3 redis_migration.py database.composedb.com mypassword123 99999 redis.test.databases.appdomain.cloud mypassword456 88888 --srchostcacert ~/path/to/source_cert --dsthostcacert ~/path/to/dest_cert --sslsrc --ssldst
 ```
 
 ## Dry run

@@ -31,19 +31,20 @@ from redis.exceptions import ResponseError
 @click.argument('dsthost')
 @click.argument('dsthostauth')
 @click.argument('dsthostport')
-@click.argument("dsthostcacert")
+@click.option("--srchostcacert",default=None, help="Location of CA cert for source host")
+@click.option("--dsthostcacert",default=None, help="Location of CA cert for destination host")
 @click.option('--sslsrc',default=False, is_flag=True, help='Set TLS/SSL flag for source')
 @click.option('--ssldst',default=False, is_flag=True, help='Set TLS/SSL flag for destination')
 @click.option('--db', default=0, help='Redis db number, default 0')
 @click.option('--flush', default=False, is_flag=True, help='Delete all keys from destination before migrating')
 @click.option('--dryrun', default=False, is_flag=True, help='Execute test run of flush (if enabled) and migration')
 
-def migrate(srchost, srchostauth, srchostport, dsthost, dsthostauth, dsthostport, dsthostcacert, sslsrc, ssldst, db, flush, dryrun):
+def migrate(srchost, srchostauth, srchostport, dsthost, dsthostauth, dsthostport, srchostcacert, dsthostcacert, sslsrc, ssldst, db, flush, dryrun):
     if srchost == dsthost:
         print('Source and destination must be different.')
         return
 
-    source = redis.StrictRedis(host=srchost, port=int(srchostport), db=db, password=srchostauth, ssl=sslsrc, ssl_cert_reqs=None)
+    source = redis.StrictRedis(host=srchost, port=int(srchostport), db=db, password=srchostauth, ssl=sslsrc, ssl_ca_certs=srchostcacert)
     dest = redis.StrictRedis(host=dsthost, port=int(dsthostport), db=db, password=dsthostauth, ssl=ssldst, ssl_ca_certs=dsthostcacert)
 
     if flush and not dryrun:
