@@ -44,7 +44,11 @@ def migrate(srchost, srchostauth, srchostport, dsthost, dsthostauth, dsthostport
         print('Source and destination must be different.')
         return
 
-    source = redis.Redis(host=srchost, port=int(srchostport), db=db, password=srchostauth, ssl=sslsrc, ssl_cert_reqs=None)
+    if ":" in srchostauth:
+      username, password = srchostauth.split(":")
+      source = redis.Redis(host=srchost, port=int(srchostport), db=db, username=username, password=password, ssl=sslsrc, ssl_cert_reqs=None)
+    else:
+      source = redis.Redis(host=srchost, port=int(srchostport), db=db, password=srchostauth, ssl=sslsrc, ssl_cert_reqs=None)
 
     if ":" in dsthostauth:
       username, password = dsthostauth.split(":")
